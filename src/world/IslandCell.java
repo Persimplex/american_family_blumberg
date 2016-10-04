@@ -80,5 +80,12 @@ public class IslandCell implements Updatable {
         return terrain.color;
     }
 
+    public int getX(){
+        return location.getX();
+    }
+
+    public int getY(){
+        return location.getY();
+    }
 }
 

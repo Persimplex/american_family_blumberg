@@ -1,5 +1,6 @@
 package ui;
 
+import gamestate.GameState;
 import util.Updatable;
 import world.IslandMap;
 
@@ -10,8 +11,8 @@ public class UIManager implements Updatable {
 
     private GameCanvas canvas;
 
-    public UIManager(int xSize, int ySize, int displaySize, IslandMap map){
-        canvas = new GameCanvas(xSize, ySize, displaySize, map);
+    public UIManager(int xSize, int ySize, int displaySize, IslandMap map, GameState gameState){
+        canvas = new GameCanvas(xSize, ySize, displaySize, map, gameState);
     }
 
     @Override

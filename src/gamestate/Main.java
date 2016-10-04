@@ -46,11 +46,8 @@ public class Main extends Application {
         initializeState();
 
         // Initialize game canvas
-        canvas = new GameCanvas(WIDTH, HEIGHT, SQUARE_SIZE, map);
+        canvas = new GameCanvas(WIDTH, HEIGHT, SQUARE_SIZE, map, gameState);
         gameGroup.getChildren().add(canvas);
-
-        // Canvas mouse monitors
-        canvas.setUpMouseTracker();
 
         // Init and start gameLoop
         KeyFrame frame = new KeyFrame(Duration.millis(FRAME_DUR), new EventHandler<ActionEvent>(){
