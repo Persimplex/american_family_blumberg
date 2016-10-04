@@ -3,9 +3,9 @@ package world;
 import javafx.scene.Group;
 import javafx.scene.Node;
 import javafx.scene.paint.Paint;
+import units.Location;
 import units.actors.Actor;
 import units.items.AbstractItem;
-import units.Location;
 import util.Updatable;
 import world.terrains.AbstractTerrain;
 
