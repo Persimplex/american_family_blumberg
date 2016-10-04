@@ -4,6 +4,8 @@ import gamestate.GameState;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.paint.Color;
+import units.Location;
+import units.actors.Actor;
 import util.IUpdatable;
 import world.IslandCell;
 import world.IslandMap;
@@ -97,14 +99,29 @@ public class GameCanvas extends Canvas implements IUpdatable {
         int yEnd = Math.min(yStart + Y_SQUARES, gameMap.ySize - 1) + 1;
 
         // Draw them
+        GraphicsContext gc = getGraphicsContext2D();
         for(int x = xStart; x < xEnd; x++){
             for(int y = yStart; y < yEnd; y++){
                 int curXStart = x * SQUARE_SIZE - xOffset;
                 int curYStart = y * SQUARE_SIZE - yOffset;
 
-
                 IslandCell curCell = gameMap.getCell(x, y);
-                renderCell(curCell, curXStart, curYStart);
+                renderCell(gc, curCell, curXStart, curYStart);
+            }
+        }
+
+        for(Actor a: gameState.getSurvivors()){
+            Location actorLocation = a.getLocation();
+
+            int actorXS = actorLocation.getX();
+            int actorYS = actorLocation.getY();
+
+//            System.out.println("Actor l: (" + actorXS + ", " + actorYS + ") :: (" + xStart + "=>" + xEnd + "; " + yStart + "=>" + yEnd + ")");
+            if(xStart <= actorXS && actorXS <= xEnd && yStart <= actorYS && actorYS <= yEnd){
+                int curXStart = actorXS * SQUARE_SIZE - xOffset;
+                int curYStart = actorYS * SQUARE_SIZE - yOffset;
+
+                renderActor(gc, a, curXStart, curYStart);
             }
         }
 
@@ -116,13 +133,19 @@ public class GameCanvas extends Canvas implements IUpdatable {
 
     }
 
-    private void renderCell(IslandCell cell, int xStart, int yStart){
-        GraphicsContext gc = getGraphicsContext2D();
-
+    private void renderCell(GraphicsContext gc, IslandCell cell, int xStart, int yStart){
         gc.setFill(cell.getTerrainColor());
         gc.setStroke(Color.BLACK);
         gc.fillRect(xStart, yStart, SQUARE_SIZE, SQUARE_SIZE);
         gc.strokeRect(xStart, yStart, SQUARE_SIZE, SQUARE_SIZE);
+    }
+
+    private void renderActor(GraphicsContext gc, Actor a, int xStart, int yStart){
+        Color actorColor = a.getColor();
+        if(actorColor != null){
+            gc.setFill(actorColor);
+            gc.fillRect(xStart + 4, yStart + 4, SQUARE_SIZE - 8, SQUARE_SIZE - 8);
+        }
     }
 
     private void setOffset(int newXOffset, int newYOffset){

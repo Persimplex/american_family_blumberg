@@ -14,8 +14,8 @@ public class Survivor extends Actor {
 
     public Survivor(Location startingLocation, int displaySize) {
         super(SURVIVOR_BASE_HEALTH, displaySize, updateVelocity);
-
-        moveTo(startingLocation);
+        this.color = SURVIVOR_COLOR;
+        setLocation(startingLocation);
     }
 
 }

@@ -2,6 +2,7 @@ package world;
 
 import javafx.scene.Group;
 import javafx.scene.Node;
+import javafx.scene.paint.Color;
 import javafx.scene.paint.Paint;
 import units.Location;
 import units.actors.Actor;
@@ -37,6 +38,7 @@ public class IslandCell implements IUpdatable {
 
     public void addActor(Actor actor){
         if(!actorList.contains(actor)){
+            System.out.println("Addded actor");
             this.actorList.add(actor);
         }
     }
@@ -72,7 +74,7 @@ public class IslandCell implements IUpdatable {
     @Override
     public void update() {
         for(Actor actor: actorList){
-            actor.update();
+            actor.shouldUpdate();
         }
     }
 
@@ -86,6 +88,18 @@ public class IslandCell implements IUpdatable {
 
     public int getY(){
         return location.getY();
+    }
+
+    public Location getLocation(){
+        return location;
+    }
+
+    public Color getActorColor(){
+        if(actorList.size() != 0){
+            return actorList.get(0).getColor();
+        }
+
+        return null;
     }
 }
 

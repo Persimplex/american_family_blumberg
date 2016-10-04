@@ -32,7 +32,7 @@ public class Main extends Application {
 
     private Timeline gameLoop;
     private IslandMap map;
-    private GameState gameState;
+    public static GameState gameState;
     private GameCanvas canvas;
 
     private long lastTime = 0;
@@ -68,7 +68,6 @@ public class Main extends Application {
         });
         gameLoop = new Timeline(FPS, frame);
         gameLoop.setCycleCount(Animation.INDEFINITE);
-
 
         gameLoop.play();
         primaryStage.show();

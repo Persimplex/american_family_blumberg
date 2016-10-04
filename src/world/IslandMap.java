@@ -1,6 +1,8 @@
 package world;
 
 import units.Location;
+import units.actors.Actor;
+import units.actors.Survivor;
 import util.IUpdatable;
 import world.terrains.AbstractTerrain;
 import world.terrains.Forest;
@@ -54,6 +56,10 @@ public class IslandMap implements IUpdatable {
 
     public IslandCell getCell(int x, int y){
         return mapArray[x][y];
+    }
+
+    public IslandCell getCell(Location l){
+        return getCell(l.getX(), l.getY());
     }
 
     public void setTerrain(int x, int y, AbstractTerrain terrain){
