@@ -3,7 +3,7 @@ package units.actors;
 import javafx.scene.paint.Color;
 import units.Location;
 import units.items.AbstractItem;
-import util.Updatable;
+import util.IUpdateReporter;
 import util.UpdateVelocityManager;
 
 import java.util.List;
@@ -11,7 +11,7 @@ import java.util.List;
 /**
  * Created by Tim on 04/10/16.
  */
-public abstract class Actor implements Updatable {
+public abstract class Actor implements IUpdateReporter {
 
     public final int displaySize;
 
@@ -25,7 +25,7 @@ public abstract class Actor implements Updatable {
     public Actor(int health, int displaySize, int updateVelocity){
         this.health = health;
         this.displaySize = displaySize;
-        this.uvm = new UpdateVelocityManager(updateVelocity, this::actualUpdate);
+        this.uvm = new UpdateVelocityManager(updateVelocity);
     }
 
     public void moveTo(Location newLocation){
@@ -40,14 +40,13 @@ public abstract class Actor implements Updatable {
         return this.inventory;
     }
 
-    @Override
-    public void update() {
-        uvm.update();
-    }
-
-    protected abstract void actualUpdate();
-
     public Color getColor(){
         return this.color;
+    }
+
+    // TODO: Implement "I'm looking for a job" Interface
+    @Override
+    public boolean shouldUpdate() {
+        return uvm.update();
     }
 }

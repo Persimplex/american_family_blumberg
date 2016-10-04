@@ -1,7 +1,7 @@
 package gamestate;
 
 import units.actors.Survivor;
-import util.Updatable;
+import util.IUpdatable;
 import world.IslandCell;
 import world.IslandMap;
 
@@ -11,7 +11,7 @@ import java.util.List;
 /**
  * Created by Tim on 04/10/16.
  */
-public class GameState implements Updatable {
+public class GameState implements IUpdatable {
 
     public IslandMap islandMap;
 
@@ -24,6 +24,11 @@ public class GameState implements Updatable {
 
     @Override
     public void update() {
+        for(Survivor s: survivors){
+            if(s.shouldUpdate()){
+                // Use this guy to perform an action
+            }
+        }
         islandMap.update();
     }
 

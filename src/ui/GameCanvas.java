@@ -4,14 +4,14 @@ import gamestate.GameState;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.paint.Color;
-import util.Updatable;
+import util.IUpdatable;
 import world.IslandCell;
 import world.IslandMap;
 
 /**
  * Created by Tim on 04/10/16.
  */
-public class GameCanvas extends Canvas implements Updatable {
+public class GameCanvas extends Canvas implements IUpdatable {
 
     public static final int MOVEMENT_SENSITIVITY = 70;
     public static final int MAX_SPEED = 8;

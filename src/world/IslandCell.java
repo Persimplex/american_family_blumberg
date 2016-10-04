@@ -6,7 +6,7 @@ import javafx.scene.paint.Paint;
 import units.Location;
 import units.actors.Actor;
 import units.items.AbstractItem;
-import util.Updatable;
+import util.IUpdatable;
 import world.terrains.AbstractTerrain;
 
 import java.util.ArrayList;
@@ -15,7 +15,7 @@ import java.util.List;
 /**
  * Created by Tim on 04/10/16.
  */
-public class IslandCell implements Updatable {
+public class IslandCell implements IUpdatable {
 
     private Location location;
     private AbstractTerrain terrain;

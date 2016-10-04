@@ -1,13 +1,13 @@
 package ui;
 
 import gamestate.GameState;
-import util.Updatable;
+import util.IUpdatable;
 import world.IslandMap;
 
 /**
  * Created by Tim on 04/10/16.
  */
-public class UIManager implements Updatable {
+public class UIManager implements IUpdatable {
 
     private GameCanvas canvas;
 

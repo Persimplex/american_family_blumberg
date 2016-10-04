@@ -1,7 +1,7 @@
 package world;
 
 import units.Location;
-import util.Updatable;
+import util.IUpdatable;
 import world.terrains.AbstractTerrain;
 import world.terrains.Forest;
 import world.terrains.Sand;
@@ -10,7 +10,7 @@ import world.terrains.Water;
 /**
  * Created by Tim on 04/10/16.
  */
-public class IslandMap implements Updatable {
+public class IslandMap implements IUpdatable {
 
     public final int SPACER_SIZE = 1;
 

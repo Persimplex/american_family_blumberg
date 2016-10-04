@@ -10,9 +10,10 @@ public class Survivor extends Actor {
 
     public static final int SURVIVOR_BASE_HEALTH = 100;
     public static final Color SURVIVOR_COLOR = Color.RED;
+    public static int updateVelocity = 5;
 
     public Survivor(Location startingLocation, int displaySize) {
-        super(SURVIVOR_BASE_HEALTH, displaySize);
+        super(SURVIVOR_BASE_HEALTH, displaySize, updateVelocity);
 
         moveTo(startingLocation);
     }
