@@ -10,6 +10,8 @@ import util.IUpdatable;
 import world.IslandCell;
 import world.IslandMap;
 
+import java.awt.*;
+
 /**
  * Created by Tim on 04/10/16.
  */
@@ -17,6 +19,9 @@ public class GameCanvas extends Canvas implements IUpdatable {
 
     public static final int MOVEMENT_SENSITIVITY = 70;
     public static final int MAX_SPEED = 8;
+
+    public static final Color BORDER_COLOR = Color.BLACK;
+    public static final Color ITEM_BORDER = Color.DARKGRAY;
 
     public final int WIDTH;
     public final int HEIGHT;
@@ -35,7 +40,6 @@ public class GameCanvas extends Canvas implements IUpdatable {
 
     private IslandMap gameMap;
     private GameState gameState;
-
 
 
     public GameCanvas(int xSize, int ySize, int displaySize, IslandMap map, GameState gs){
@@ -84,7 +88,12 @@ public class GameCanvas extends Canvas implements IUpdatable {
         // Set up item selection
         setOnMouseClicked(event -> {
             IslandCell curCell = getCellUnderMouse(event.getSceneX(), event.getSceneY());
-            gameState.setSelected(curCell);
+
+            if(event.isControlDown()){
+                gameState.addToSelected(curCell);
+            } else {
+                gameState.setSelected(curCell);
+            }
         });
     }
 
@@ -116,7 +125,6 @@ public class GameCanvas extends Canvas implements IUpdatable {
             int actorXS = actorLocation.getX();
             int actorYS = actorLocation.getY();
 
-//            System.out.println("Actor l: (" + actorXS + ", " + actorYS + ") :: (" + xStart + "=>" + xEnd + "; " + yStart + "=>" + yEnd + ")");
             if(xStart <= actorXS && actorXS <= xEnd && yStart <= actorYS && actorYS <= yEnd){
                 int curXStart = actorXS * SQUARE_SIZE - xOffset;
                 int curYStart = actorYS * SQUARE_SIZE - yOffset;
@@ -134,8 +142,18 @@ public class GameCanvas extends Canvas implements IUpdatable {
     }
 
     private void renderCell(GraphicsContext gc, IslandCell cell, int xStart, int yStart){
-        gc.setFill(cell.getTerrainColor());
-        gc.setStroke(Color.BLACK);
+        Color finalCellColor = cell.getItemColor();
+
+        if(finalCellColor == null){
+            finalCellColor = cell.getTerrainColor();
+        }
+
+        if(cell.isSelected()){
+            finalCellColor = finalCellColor.interpolate(Color.YELLOW, 0.3);
+        }
+
+        gc.setFill(finalCellColor);
+        gc.setStroke(BORDER_COLOR);
         gc.fillRect(xStart, yStart, SQUARE_SIZE, SQUARE_SIZE);
         gc.strokeRect(xStart, yStart, SQUARE_SIZE, SQUARE_SIZE);
     }

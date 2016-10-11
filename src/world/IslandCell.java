@@ -3,9 +3,9 @@ package world;
 import javafx.scene.Group;
 import javafx.scene.Node;
 import javafx.scene.paint.Color;
-import javafx.scene.paint.Paint;
 import units.Location;
 import units.actors.Actor;
+import units.actors.Survivor;
 import units.items.AbstractItem;
 import util.IUpdatable;
 import world.terrains.AbstractTerrain;
@@ -20,26 +20,26 @@ public class IslandCell implements IUpdatable {
 
     private Location location;
     private AbstractTerrain terrain;
-    private List<Actor> actorList;
+    private List<Survivor> survivorList;
     private List<AbstractItem> itemList;
 
     private Group group;
     private Node terrainNode;
     private Node actorNode;
+    private boolean isSelected = false;
 
     public IslandCell(Location location, AbstractTerrain terrain){
         this.group = new Group();
         this.location = location;
         this.terrain = terrain;
 
-        this.actorList = new ArrayList<>();
+        this.survivorList = new ArrayList<>();
         this.itemList = new ArrayList<>();
     }
 
-    public void addActor(Actor actor){
-        if(!actorList.contains(actor)){
-            System.out.println("Addded actor");
-            this.actorList.add(actor);
+    public void addSurvivor(Survivor survivor){
+        if(!survivorList.contains(survivor)){
+            this.survivorList.add(survivor);
         }
     }
 
@@ -49,8 +49,8 @@ public class IslandCell implements IUpdatable {
         }
     }
 
-    public List<Actor> getActorList(){
-        return actorList;
+    public List<Survivor> getSurvivorList(){
+        return survivorList;
     }
 
     public List<AbstractItem> getItemList(){
@@ -73,12 +73,12 @@ public class IslandCell implements IUpdatable {
 
     @Override
     public void update() {
-        for(Actor actor: actorList){
-            actor.shouldUpdate();
+        for(Survivor survivor: survivorList){
+            survivor.shouldUpdate();
         }
     }
 
-    public Paint getTerrainColor(){
+    public Color getTerrainColor(){
         return terrain.color;
     }
 
@@ -94,12 +94,20 @@ public class IslandCell implements IUpdatable {
         return location;
     }
 
-    public Color getActorColor(){
-        if(actorList.size() != 0){
-            return actorList.get(0).getColor();
+    public Color getItemColor(){
+        if(itemList.size() != 0){
+            return itemList.get(0).getColor();
         }
 
         return null;
+    }
+
+    public boolean isSelected(){
+        return this.isSelected;
+    }
+
+    public void setIsSelected(boolean newSelectionState){
+        this.isSelected = newSelectionState;
     }
 }
 

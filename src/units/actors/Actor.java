@@ -4,6 +4,7 @@ import gamestate.Main;
 import javafx.scene.paint.Color;
 import path.Path;
 import units.Location;
+import units.Unit;
 import units.items.AbstractItem;
 import util.IUpdateReporter;
 import util.UpdateVelocityManager;
@@ -13,23 +14,17 @@ import java.util.List;
 /**
  * Created by Tim on 04/10/16.
  */
-public abstract class Actor implements IUpdateReporter {
-
-    public final int displaySize;
+public abstract class Actor extends Unit implements IUpdateReporter {
 
     private Path path;
     private int health;
-    private UpdateVelocityManager uvm;
 
-    private List<AbstractItem> inventory;
-    protected Color color;
-    private Location location;
+    protected List<AbstractItem> inventory;
 
     public Actor(int health, int displaySize, int updateVelocity){
-        this.health = health;
-        this.displaySize = displaySize;
-        this.uvm = new UpdateVelocityManager(updateVelocity);
+        super(displaySize, updateVelocity);
 
+        this.health = health;
         this.path = new Path();
     }
 
@@ -41,11 +36,6 @@ public abstract class Actor implements IUpdateReporter {
         this.location = location;
     }
 
-    public void moveTo(Location newLocation){
-        Main.gameState.move(this, newLocation);
-        this.location = newLocation;
-    }
-
     public void addItemToInventory(AbstractItem item){
         this.inventory.add(item);
     }
@@ -54,14 +44,11 @@ public abstract class Actor implements IUpdateReporter {
         return this.inventory;
     }
 
-    public Color getColor(){
-        return this.color;
-    }
 
     // TODO: Implement "I'm looking for a job" Interface
     @Override
     public boolean shouldUpdate() {
-        boolean shouldUpdate = uvm.update();
+        boolean shouldUpdate = super.shouldUpdate();
 
         if(shouldUpdate && !path.isEmpty()) {
             moveTo(path.getNextTile().getLocation());
@@ -75,8 +62,4 @@ public abstract class Actor implements IUpdateReporter {
         this.path = newPath;
     }
 
-    public Location getLocation(){
-        return location;
-
-    }
 }

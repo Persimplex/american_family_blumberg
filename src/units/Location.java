@@ -25,4 +25,8 @@ public class Location {
         this.x = x;
         this.y = y;
     }
+
+    public static Location at(int x, int y){
+        return new Location(x, y);
+    }
 }

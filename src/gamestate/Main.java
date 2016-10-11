@@ -10,7 +10,7 @@ import javafx.scene.Group;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
 import javafx.util.Duration;
-import ui.GameCanvas;
+import ui.UIManager;
 import world.IslandMap;
 
 public class Main extends Application {
@@ -22,8 +22,9 @@ public class Main extends Application {
     public static final int FRAME_DUR = 1000/FPS; // in millis
 
     public static final int SQUARE_SIZE = 20;
-    public static final int X_SQUARES = 50;
-    public static final int Y_SQUARES = 50;
+    public static final int GRID_SIZE = SQUARE_SIZE + 2;
+    public static final int X_SQUARES = 500;
+    public static final int Y_SQUARES = 500;
 
     private Group gameGroup;
     private Stage gameStage;
@@ -33,7 +34,7 @@ public class Main extends Application {
     private Timeline gameLoop;
     private IslandMap map;
     public static GameState gameState;
-    private GameCanvas canvas;
+    private UIManager uiManager;
 
     private long lastTime = 0;
     private int updates = 0;
@@ -46,8 +47,9 @@ public class Main extends Application {
         initializeState();
 
         // Initialize game canvas
-        canvas = new GameCanvas(WIDTH, HEIGHT, SQUARE_SIZE, map, gameState);
-        gameGroup.getChildren().add(canvas);
+        uiManager = new UIManager(WIDTH, HEIGHT, SQUARE_SIZE, map, gameState);
+        gameGroup = uiManager.getNode();
+        gameScene.setRoot(gameGroup);
 
         // Init and start gameLoop
         KeyFrame frame = new KeyFrame(Duration.millis(FRAME_DUR), new EventHandler<ActionEvent>(){
@@ -94,7 +96,7 @@ public class Main extends Application {
         gameState.update();
 
         // Render game world
-        canvas.update();
+        uiManager.update();
     }
 
 

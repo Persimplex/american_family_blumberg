@@ -1,5 +1,7 @@
 package path;
 
+import gamestate.GameState;
+import units.Location;
 import world.IslandCell;
 import world.IslandMap;
 
@@ -38,6 +40,13 @@ public class PathFactory {
         }
 
         return new Path(tempList);
+    }
+
+    public static Path createPath(GameState gs, Location start, Location end){
+        IslandCell startCell = gs.islandMap.getCell(start);
+        IslandCell endCell = gs.islandMap.getCell(end);
+
+        return createPath(gs.islandMap, startCell, endCell);
     }
 }
 
