@@ -34,7 +34,7 @@ public class Main extends Application {
     private Timeline gameLoop;
     private IslandMap map;
     public static GameState gameState;
-    private UIManager uiManager;
+    public static UIManager uiManager;
 
     private long lastTime = 0;
     private int updates = 0;
@@ -78,7 +78,7 @@ public class Main extends Application {
     private void initializeState(){
         // Initialize Map
         map = new IslandMap(X_SQUARES, Y_SQUARES, SQUARE_SIZE);
-        gameState = new GameState(map);
+        gameState = new GameState(map, gameScene);
     }
 
     private void initializeWindow(Stage primaryStage){

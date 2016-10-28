@@ -1,16 +1,18 @@
 package ui;
 
 import gamestate.GameState;
+import gamestate.Main;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
+import javafx.scene.input.MouseEvent;
 import javafx.scene.paint.Color;
 import units.Location;
 import units.actors.Actor;
+import units.actors.Survivor;
+import util.ColorUtil;
 import util.IUpdatable;
 import world.IslandCell;
 import world.IslandMap;
-
-import java.awt.*;
 
 /**
  * Created by Tim on 04/10/16.
@@ -22,6 +24,14 @@ public class GameCanvas extends Canvas implements IUpdatable {
 
     public static final Color BORDER_COLOR = Color.BLACK;
     public static final Color ITEM_BORDER = Color.DARKGRAY;
+
+    public static final double SELECTION_PERCENTAGE = 0.65;
+    public static final Color SELECTION_COLOR = ColorUtil.createTranslucentColor(Color.YELLOW,
+                                                                                 SELECTION_PERCENTAGE);
+    public static final Color SELECTION_BORDER = Color.ROYALBLUE;
+    public static final double HOVER_SELECTION_PERCENTAGE = 0.55;
+    public static final Color HOVER_SELECT_COLOR = ColorUtil.createTranslucentColor(Color.AQUAMARINE,
+                                                                                    HOVER_SELECTION_PERCENTAGE);
 
     public final int WIDTH;
     public final int HEIGHT;
@@ -40,6 +50,10 @@ public class GameCanvas extends Canvas implements IUpdatable {
 
     private IslandMap gameMap;
     private GameState gameState;
+
+    private boolean isSecondSelecting = false;
+    private IslandCell mouseCell;
+    private MouseEvent lastMouseEvent;
 
 
     public GameCanvas(int xSize, int ySize, int displaySize, IslandMap map, GameState gs){
@@ -83,11 +97,18 @@ public class GameCanvas extends Canvas implements IUpdatable {
             } else {
                 yVelocity = 0.0;
             }
+
+            lastMouseEvent = event;
         });
 
         // Set up item selection
         setOnMouseClicked(event -> {
-            IslandCell curCell = getCellUnderMouse(event.getSceneX(), event.getSceneY());
+            IslandCell curCell = getCellUnderMouse(event);
+
+            if(isSecondSelecting){
+                System.out.println("THIS ONE WILL BE A SECOND SELECTION");
+                gameState.secondSelection(curCell);
+            }
 
             if(event.isControlDown()){
                 gameState.addToSelected(curCell);
@@ -95,11 +116,20 @@ public class GameCanvas extends Canvas implements IUpdatable {
                 gameState.setSelected(curCell);
             }
         });
+
+        // Set up
     }
 
 
     @Override
     public void update() {
+        // Handle second selecting
+        if(isSecondSelecting){
+//            System.out.println("Stopping the secondSelecting");
+            mouseCell = getCellUnderMouse(lastMouseEvent);
+//            setSecondSelecting(false);
+        }
+
         // Identify which blocks to draw
         int xStart = Math.max(xOffset / SQUARE_SIZE, 0);
         int yStart = yOffset / SQUARE_SIZE;
@@ -107,20 +137,29 @@ public class GameCanvas extends Canvas implements IUpdatable {
         int xEnd = Math.min(xStart + X_SQUARES, gameMap.xSize - 1) + 1;
         int yEnd = Math.min(yStart + Y_SQUARES, gameMap.ySize - 1) + 1;
 
-        // Draw them
+        // Draw cells on screen
         GraphicsContext gc = getGraphicsContext2D();
         for(int x = xStart; x < xEnd; x++){
             for(int y = yStart; y < yEnd; y++){
-                int curXStart = x * SQUARE_SIZE - xOffset;
-                int curYStart = y * SQUARE_SIZE - yOffset;
-
                 IslandCell curCell = gameMap.getCell(x, y);
-                renderCell(gc, curCell, curXStart, curYStart);
+                // skip selected cells (for now)
+                if(curCell.isSelected()) continue;
+
+                renderCell(gc, curCell);
             }
         }
 
-        for(Actor a: gameState.getSurvivors()){
-            Location actorLocation = a.getLocation();
+        // Draw selected cells
+        for(int x = xStart; x < xEnd; x++){
+            for(int y = yStart; y < yEnd; y++){
+                IslandCell curCell = gameMap.getCell(x, y);
+                if(curCell.isSelected()) renderCell(gc, curCell);
+            }
+        }
+
+        // Render survivors
+        for(Survivor s: gameState.getSurvivors()){
+            Location actorLocation = s.getLocation();
 
             int actorXS = actorLocation.getX();
             int actorYS = actorLocation.getY();
@@ -129,8 +168,13 @@ public class GameCanvas extends Canvas implements IUpdatable {
                 int curXStart = actorXS * SQUARE_SIZE - xOffset;
                 int curYStart = actorYS * SQUARE_SIZE - yOffset;
 
-                renderActor(gc, a, curXStart, curYStart);
+                renderActor(gc, s, curXStart, curYStart);
             }
+        }
+
+        // Render selection square
+        if(isSecondSelecting && mouseCell != null){
+            renderMouseCell(gc);
         }
 
         // Move offsets
@@ -141,21 +185,49 @@ public class GameCanvas extends Canvas implements IUpdatable {
 
     }
 
-    private void renderCell(GraphicsContext gc, IslandCell cell, int xStart, int yStart){
-        Color finalCellColor = cell.getItemColor();
+    public void setSecondSelecting(boolean isSecondSelecting){
+        this.isSecondSelecting = isSecondSelecting;
+    }
 
+
+    // Private Methods
+
+    private void renderCell(GraphicsContext gc, IslandCell cell){
+        Location starts = calcPixelStarts(cell);
+
+        // Draw terrain or item
+        Color finalCellColor = cell.getItemColor();
         if(finalCellColor == null){
             finalCellColor = cell.getTerrainColor();
         }
+        fillRect(gc, starts, finalCellColor);
 
+        // Draw selection
         if(cell.isSelected()){
-            finalCellColor = finalCellColor.interpolate(Color.YELLOW, 0.3);
+            fillRect(gc, starts, SELECTION_COLOR);
+            gc.setStroke(SELECTION_BORDER);
+        } else {
+            gc.setStroke(BORDER_COLOR);
         }
 
-        gc.setFill(finalCellColor);
-        gc.setStroke(BORDER_COLOR);
-        gc.fillRect(xStart, yStart, SQUARE_SIZE, SQUARE_SIZE);
-        gc.strokeRect(xStart, yStart, SQUARE_SIZE, SQUARE_SIZE);
+        gc.strokeRect(starts.getX(), starts.getY(), SQUARE_SIZE, SQUARE_SIZE);
+    }
+
+    private void renderMouseCell(GraphicsContext gc){
+        Location sts = calcPixelStarts(mouseCell);
+
+        Color mouseCellColor = HOVER_SELECT_COLOR;
+
+        fillRect(gc, sts, mouseCellColor);
+        gc.setStroke(SELECTION_COLOR);
+        gc.strokeRect(sts.getX(), sts.getY(), SQUARE_SIZE, SQUARE_SIZE);
+    }
+
+    private Location calcPixelStarts(IslandCell cell){
+        int curXStart = cell.getX() * SQUARE_SIZE - xOffset;
+        int curYStart = cell.getY() * SQUARE_SIZE - yOffset;
+
+        return Location.at(curXStart, curYStart);
     }
 
     private void renderActor(GraphicsContext gc, Actor a, int xStart, int yStart){
@@ -178,6 +250,10 @@ public class GameCanvas extends Canvas implements IUpdatable {
         return (int) (ratio * MAX_SPEED);
     }
 
+    private IslandCell getCellUnderMouse(MouseEvent event){
+        return getCellUnderMouse(event.getSceneX(), event.getSceneY());
+    }
+
     private IslandCell getCellUnderMouse(double x, double y){
         int globalX = xOffset + (int) x;
         int globalY = yOffset + (int) y;
@@ -187,4 +263,11 @@ public class GameCanvas extends Canvas implements IUpdatable {
 
         return gameMap.getCell(xSquareCoord, ySquareCoord);
     }
+
+    private void fillRect(GraphicsContext gc, Location l, Color c){
+        gc.setFill(c);
+        gc.fillRect(l.getX(), l.getY(), SQUARE_SIZE, SQUARE_SIZE);
+    }
+
+
 }

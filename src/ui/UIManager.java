@@ -1,9 +1,11 @@
 package ui;
 
 import gamestate.GameState;
+import gamestate.Main;
+import javafx.concurrent.Task;
 import javafx.scene.Group;
-import javafx.scene.Node;
 import util.IUpdatable;
+import world.IslandCell;
 import world.IslandMap;
 
 /**
@@ -17,7 +19,6 @@ public class UIManager implements IUpdatable {
 
     public UIManager(int xSize, int ySize, int displaySize, IslandMap map, GameState gameState){
         group = new Group();
-
         canvas = new GameCanvas(xSize, ySize, displaySize, map, gameState);
 
         group.getChildren().add(canvas);
@@ -31,4 +32,27 @@ public class UIManager implements IUpdatable {
     public Group getNode(){
         return group;
     }
+
+    public void setSecondSelection(boolean selection){
+        canvas.setSecondSelecting(selection);
+    }
+
+
+//    public void getSecondSelection(IslandCell firstCell, Runnable uponCompletion){
+//        // Create background thread to retrieve secondSelection
+//        Task<IslandCell> secondSelectionTask = new Task<IslandCell>() {
+//            @Override
+//            protected IslandCell call() throws Exception {
+//                canvas.setSecondSelecting(true);
+//
+//                // Wait until secondSelect is true
+//                while(Main.gameState.getSecondSelection() == )
+//                return null;
+//            }
+//
+//            private IslandCell doAfterSecondSelected(){
+//
+//            }
+//        };
+//    }
 }

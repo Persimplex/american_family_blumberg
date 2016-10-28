@@ -16,10 +16,13 @@ import java.util.List;
  */
 public abstract class Actor extends Unit implements IUpdateReporter {
 
+    protected List<AbstractItem> inventory;
+
+
     private Path path;
     private int health;
+    private Runnable afterActionCallback = null;
 
-    protected List<AbstractItem> inventory;
 
     public Actor(int health, int displaySize, int updateVelocity){
         super(displaySize, updateVelocity);
@@ -37,7 +40,11 @@ public abstract class Actor extends Unit implements IUpdateReporter {
     }
 
     public void addItemToInventory(AbstractItem item){
-        this.inventory.add(item);
+        inventory.add(item);
+    }
+
+    public void removeItemFromInventory(AbstractItem item){
+        inventory.remove(item);
     }
 
     public List<AbstractItem> getInventory(){
@@ -54,12 +61,25 @@ public abstract class Actor extends Unit implements IUpdateReporter {
             moveTo(path.getNextTile().getLocation());
         }
 
+        if(path.isEmpty() && afterActionCallback != null){
+            // Execute callback
+
+            // TODO: Create mechanism for executing at most once
+            afterActionCallback.run();
+        }
+
         return shouldUpdate;
     }
 
     public void setPath(Path newPath){
         System.out.println("new path is empty: " + newPath.isEmpty());
-        this.path = newPath;
+        path = newPath;
     }
+
+
+    public void setAfterCurActionCallback(Runnable callback){
+        this.afterActionCallback = callback;
+    }
+
 
 }

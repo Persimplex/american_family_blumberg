@@ -66,5 +66,6 @@ public abstract class Task extends javafx.concurrent.Task {
         Main.gameState.addSurvivorToTaskEngine(s);
     }
 
+
     protected abstract void taskBody();
 }

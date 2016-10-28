@@ -39,13 +39,25 @@ public class IslandCell implements IUpdatable {
 
     public void addSurvivor(Survivor survivor){
         if(!survivorList.contains(survivor)){
-            this.survivorList.add(survivor);
+            survivorList.add(survivor);
+        }
+    }
+
+    public void removeSurvivor(Survivor survivor){
+        if(survivorList.contains(survivor)){
+            survivorList.remove(survivor);
         }
     }
 
     public void addItem(AbstractItem item){
         if(!itemList.contains(item)){
             this.itemList.add(item);
+        }
+    }
+
+    public void removeItem(AbstractItem item){
+        if(itemList.contains(item)){
+            itemList.remove(item);
         }
     }
 
