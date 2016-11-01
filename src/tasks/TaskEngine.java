@@ -40,4 +40,12 @@ public class TaskEngine implements IUpdatable{
             t.executeTask(s);
         }
     }
+
+    /*
+        DEBUG METHODS
+     */
+
+    public boolean contains(Survivor s){
+        return survivorQueue.contains(s);
+    }
 }

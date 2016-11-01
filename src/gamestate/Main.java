@@ -79,6 +79,9 @@ public class Main extends Application {
         // Initialize Map
         map = new IslandMap(X_SQUARES, Y_SQUARES, SQUARE_SIZE);
         gameState = new GameState(map, gameScene);
+
+        // TODO: remove
+        gameState.createTestData();
     }
 
     private void initializeWindow(Stage primaryStage){

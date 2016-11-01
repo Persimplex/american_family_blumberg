@@ -17,8 +17,18 @@ public abstract class Subtask extends Task {
         this.survivor = s;
     }
 
-    public void setCallback(Runnable callback){
-        this.survivor.setAfterCurActionCallback(callback);
+
+    @Override
+    public void executeTask(Survivor s) {
+        this.survivor = s;
+
+        try {
+            call();
+        } catch (Exception e){
+            e.printStackTrace();
+        }
+
+        // Do not readd the survivor to the queue, handled by Multistage task
     }
 
 

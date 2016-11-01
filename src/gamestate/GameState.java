@@ -2,10 +2,8 @@ package gamestate;
 
 import gamestate.input.Keyboard;
 import javafx.concurrent.Task;
-import javafx.event.EventHandler;
 import javafx.scene.Scene;
 import javafx.scene.input.KeyCode;
-import javafx.scene.input.MouseEvent;
 import tasks.TaskEngine;
 import tasks.task_types.GoHereTask;
 import tasks.task_types.GoPickupCarryTask;
@@ -49,15 +47,6 @@ public class GameState implements IUpdatable, IGameState {
         this.selectedCells = new ArrayList<>();
         this.taskEngine = new TaskEngine();
         this.keyboard = new Keyboard(gameScene, KEYS);
-
-        // Add some actors
-        Survivor newSurvivor = new Survivor(new Location(0, 0), Main.SQUARE_SIZE);
-        Survivor newSurvivor2 = new Survivor(new Location(1, 1), Main.SQUARE_SIZE);
-        this.addSurvivor(newSurvivor);
-        this.addSurvivor(newSurvivor2);
-
-        SolarPanel solarPanel = new SolarPanel();
-        addItem(solarPanel, Location.at(5, 5));
     }
 
     @Override
@@ -77,6 +66,17 @@ public class GameState implements IUpdatable, IGameState {
 //        islandMap.update();
     }
 
+    public void createTestData(){
+        // Add some actors
+        Survivor newSurvivor = new Survivor(new Location(0, 0), Main.SQUARE_SIZE);
+        Survivor newSurvivor2 = new Survivor(new Location(1, 1), Main.SQUARE_SIZE);
+        this.addSurvivor(newSurvivor);
+        this.addSurvivor(newSurvivor2);
+
+        SolarPanel solarPanel = new SolarPanel();
+        addItem(solarPanel, Location.at(5, 5));
+    }
+
     public void addToSelected(IslandCell...cells){
         // Handle remove cell case
         if(cells.length == 1 && selectedCells.size() != 0 && selectedCells.contains(cells[0])){
@@ -92,7 +92,6 @@ public class GameState implements IUpdatable, IGameState {
                 cell.setIsSelected(true);
             }
         }
-        System.out.println("Final size: " + selectedCells.size());
     }
 
     public void removeFromSelected(IslandCell cell){
@@ -107,7 +106,14 @@ public class GameState implements IUpdatable, IGameState {
         clearSelectedCells();
 
         addToSelected(cells);
-        System.out.println("Final size: " + selectedCells.size());
+        if(cells.length != 0){
+            System.out.println("Selection inventory size: " + cells[0].getItemList().size());
+
+            if(cells[0].getItemList().size() != 0){
+                AbstractItem i =  cells[0].getItemList().get(0);
+                System.out.println("(x, y): (" + i.getLocation().getX() + ", " + i.getLocation().getY() + ")");
+            }
+        }
         System.out.println("(" + selectedCells.get(0).getX() + ", "  + selectedCells.get(0).getY() + ")");
 
 
@@ -148,11 +154,13 @@ public class GameState implements IUpdatable, IGameState {
     }
 
     public void addSurvivorToTaskEngine(Survivor s){
+        s.setAfterCurActionCallback(null);
         taskEngine.addSurvivor(s);
     }
 
     public void addItem(AbstractItem item, Location l){
-        islandMap.getCell(l).addItem(item);
+//        islandMap.getCell(l).addItem(item);
+        item.moveBetweenCells(l);
     }
 
     public List<AbstractItem> getCellItems(Location l){
@@ -175,7 +183,12 @@ public class GameState implements IUpdatable, IGameState {
         islandMap.getCell(l).addSurvivor(survivor);
     }
 
-    public void move(AbstractItem item, Location l){
+    /**
+     * Manages IslandCell inventory management
+     * @param item
+     * @param l
+     */
+    public void moveBetweenCellInventories(AbstractItem item, Location l){
         IslandCell oldCell = islandMap.getCell(item.getLocation());
         oldCell.getItemList().remove(item);
         islandMap.getCell(l).addItem(item);

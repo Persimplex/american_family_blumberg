@@ -4,7 +4,6 @@ import javafx.scene.Group;
 import javafx.scene.Node;
 import javafx.scene.paint.Color;
 import units.Location;
-import units.actors.Actor;
 import units.actors.Survivor;
 import units.items.AbstractItem;
 import util.IUpdatable;
@@ -51,7 +50,8 @@ public class IslandCell implements IUpdatable {
 
     public void addItem(AbstractItem item){
         if(!itemList.contains(item)){
-            this.itemList.add(item);
+            itemList.add(item);
+            item.moveBetweenCells(this.location);
         }
     }
 

@@ -9,6 +9,7 @@ import units.items.AbstractItem;
 import util.IUpdateReporter;
 import util.UpdateVelocityManager;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -29,6 +30,8 @@ public abstract class Actor extends Unit implements IUpdateReporter {
 
         this.health = health;
         this.path = new Path();
+
+        this.inventory = new ArrayList<>();
     }
 
     /**
@@ -61,7 +64,7 @@ public abstract class Actor extends Unit implements IUpdateReporter {
             moveTo(path.getNextTile().getLocation());
         }
 
-        if(path.isEmpty() && afterActionCallback != null){
+        if(shouldUpdate && path.isEmpty() && afterActionCallback != null){
             // Execute callback
 
             // TODO: Create mechanism for executing at most once

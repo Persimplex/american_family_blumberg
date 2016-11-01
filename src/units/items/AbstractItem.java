@@ -15,14 +15,22 @@ public class AbstractItem extends Unit {
 
     public AbstractItem(int displaySize, int updateVeloctiy) {
         super(displaySize, updateVeloctiy);
+        this.location = new Location(0, 0);
     }
 
     /**
      * Only to be called when not in the possession of an Actor
      * @param newLocation
      */
+    public void moveBetweenCells(Location newLocation){
+        // Move from old cell to new cell
+        Main.gameState.moveBetweenCellInventories(this, newLocation);
+
+        // Update personal understanding of location
+        moveTo(newLocation);
+    }
+
     public void moveTo(Location newLocation){
-        Main.gameState.move(this, newLocation);
         this.location = newLocation;
     }
 

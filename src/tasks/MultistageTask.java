@@ -1,6 +1,8 @@
 package tasks;
 
+import gamestate.Main;
 import units.Location;
+import units.actors.Survivor;
 
 import java.util.ArrayDeque;
 import java.util.Queue;
@@ -20,14 +22,32 @@ public abstract class MultistageTask extends Task {
 
     @Override
     protected void taskBody() {
+        // Initialize stages
         setUpTask();
 
+        // Execute first stage
         executeNextStage();
+    }
+
+    @Override
+    public void executeTask(Survivor s) {
+        this.survivor = s;
+
+        try {
+            call(); // Wrapper for calling taskBody
+        } catch (Exception e){
+            e.printStackTrace();
+        }
+
+        // Do not readd the survivor to the queue
     }
 
     public void executeNextStage(){
         if(!taskQueue.isEmpty()){
             taskQueue.poll().executeTask(survivor);
+        } else {
+            System.out.println("Adding the survivor back to pool");
+            Main.gameState.addSurvivorToTaskEngine(survivor);
         }
     }
 

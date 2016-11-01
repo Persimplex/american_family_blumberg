@@ -16,7 +16,7 @@ public class PickupSubtask extends Subtask {
     AbstractItem item;
 
     public PickupSubtask(Survivor s, AbstractItem item) {
-        super(null, s.getLocation(), s);
+        super(null, item.getLocation(), s);
         this.item = item;
     }
 
@@ -31,6 +31,7 @@ public class PickupSubtask extends Subtask {
 
         // Pick up the item
         survivor.addItemToInventory(item);
+        item.setCurOwner(survivor);
         thisCell.removeItem(item);
     }
 }

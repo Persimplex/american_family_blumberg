@@ -1,5 +1,6 @@
 package tasks;
 
+import gamestate.GameState;
 import gamestate.Main;
 import units.Location;
 import units.actors.Survivor;
@@ -63,7 +64,17 @@ public abstract class Task extends javafx.concurrent.Task {
             e.printStackTrace();
         }
 
-        Main.gameState.addSurvivorToTaskEngine(s);
+        setCallback(this::putSurvivorBackOnTaskQueue);
+
+    }
+
+    private void putSurvivorBackOnTaskQueue() {
+        Main.gameState.addSurvivorToTaskEngine(survivor);
+    }
+
+
+    public void setCallback(Runnable callback){
+        this.survivor.setAfterCurActionCallback(callback);
     }
 
 

@@ -34,7 +34,7 @@ public class GoPickupCarryTask extends MultistageTask {
         addSubTask(goToEnd);
 
         // TODO: dropoff
-        DropSubtask dropOff = new DropSubtask(survivor, item);
+        DropSubtask dropOff = new DropSubtask(survivor, getEndLocation(), item);
         addSubTask(dropOff);
     }
 }

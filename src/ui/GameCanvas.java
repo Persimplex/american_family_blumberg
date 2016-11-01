@@ -231,7 +231,15 @@ public class GameCanvas extends Canvas implements IUpdatable {
     }
 
     private void renderActor(GraphicsContext gc, Actor a, int xStart, int yStart){
-        Color actorColor = a.getColor();
+        Color actorColor;
+        if(Main.gameState.taskEngine.contains((Survivor) a)){
+            // Free survivors are green
+            actorColor = Color.GREEN;
+        } else {
+            // Busy guys are red
+            actorColor = a.getColor();
+        }
+
         if(actorColor != null){
             gc.setFill(actorColor);
             gc.fillRect(xStart + 4, yStart + 4, SQUARE_SIZE - 8, SQUARE_SIZE - 8);
