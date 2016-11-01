@@ -7,6 +7,7 @@ import javafx.application.Application;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.scene.Group;
+import javafx.scene.Node;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
 import javafx.util.Duration;
@@ -26,7 +27,7 @@ public class Main extends Application {
     public static final int X_SQUARES = 500;
     public static final int Y_SQUARES = 500;
 
-    private Group gameGroup;
+    private Group mainUINode;
     private Stage gameStage;
     private Scene gameScene;
 
@@ -48,8 +49,8 @@ public class Main extends Application {
 
         // Initialize game canvas
         uiManager = new UIManager(WIDTH, HEIGHT, SQUARE_SIZE, map, gameState);
-        gameGroup = uiManager.getNode();
-        gameScene.setRoot(gameGroup);
+        mainUINode.getChildren().add(uiManager.getNode());
+        gameScene.setRoot(mainUINode);
 
         // Init and start gameLoop
         KeyFrame frame = new KeyFrame(Duration.millis(FRAME_DUR), new EventHandler<ActionEvent>(){
@@ -88,8 +89,8 @@ public class Main extends Application {
         //        Parent root = FXMLLoader.load(getClass().getResource("sample.fxml"));
         primaryStage.setTitle("American Family Blumberg");
 
-        gameGroup = new Group();
-        gameScene = new Scene(gameGroup, WIDTH, HEIGHT);
+        mainUINode = new Group();
+        gameScene = new Scene(mainUINode, WIDTH, HEIGHT);
 
         primaryStage.setScene(gameScene);
     }

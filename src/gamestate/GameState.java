@@ -209,9 +209,6 @@ public class GameState implements IUpdatable, IGameState {
                 IslandCell itemLocation = selectedCells.get(0);
                 handlePickup(itemLocation, true);
             }
-
-            // Figure out if selecting first position or second position
-//            GoPickupCarryTask pickupCarryTask = new GoPickupCarryTask();
         }
     }
 
